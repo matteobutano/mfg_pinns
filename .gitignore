@@ -2,3 +2,4 @@ run.py
 __pychache__/
 gfx/
 train.slurm
+config.json
