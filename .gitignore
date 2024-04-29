@@ -1,5 +1,5 @@
 run.py
 __pychache__/
 gfx/
-train.slurm
+slur_python.slurm
 config.json
