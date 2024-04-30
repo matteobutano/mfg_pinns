@@ -146,7 +146,7 @@ class simple_mfg:
     
     def train_step(self,verbose,learning_rate):
         
-        lr_schedule = tf.optimizers.schedules.ExponentialDecay(initial_learning_rate=learning_rate,decay_steps=10000, decay_rate=0.9)
+        lr_schedule = tf.optimizers.schedules.ExponentialDecay(initial_learning_rate=learning_rate,decay_steps=2000, decay_rate=0.9)
         
         optimizer = tf.optimizers.Adam(learning_rate = lr_schedule)
         
@@ -180,9 +180,9 @@ class simple_mfg:
                 self.train_step(False,learning_rate)
             step = step + 1
         
-        self.model.save_weights('gfx/'+ str(self.ts) + '/model.h5')
+        self.model.save_weights('gfx/'+ str(self.ts) + '/model.weights.h5')
     
-    def warmstart(self,training_steps = 1000,learning_rate = 10e-5):
+    def warmstart(self,training_steps = 5000,learning_rate = 10e-5):
 
         print('      #iter         |   Loss_total')
         print('----------------------------------')
