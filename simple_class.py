@@ -1,4 +1,4 @@
-from tensorflow.keras.models import Sequential
+from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.layers import Dense
 import tensorflow as tf
 import numpy as np
@@ -9,8 +9,18 @@ import shutil
 
 class simple_mfg:
     def __init__(self, ts):
-        with open('config.json') as f:
-            var_config = json.loads(f.read())
+        self.ts = ts
+        if not os.path.exists('gfx/'+ str(self.ts)):
+            load=False
+            os.mkdir("gfx/"+ str(self.ts))
+            shutil.copyfile("config.json", "gfx/"+ str(self.ts)+ "/config.json")
+            with open("config.json") as f:
+                var_config = json.loads(f.read())
+            print("Directory created") 
+        else:
+            with open("gfx/"+ str(self.ts) + "/config.json") as f:
+                load = True
+                var_config = json.loads(f.read())
         self.ndims = var_config['ndims']
         self.lx = var_config['lx']
         self.N_points = var_config['N_points']
@@ -31,20 +41,19 @@ class simple_mfg:
         self.sigma = np.sqrt(2*self.xi*self.c_s)
         self.g = -(self.mu*self.sigma**4)/(2*self.m_0*self.xi**2)
         self.l = -self.g*self.m_0
-        self.ts = ts
-        if not os.path.exists('gfx/'+ str(self.ts)):
-            os.mkdir('gfx/'+ str(self.ts))
-            shutil.copyfile('config.json', 'gfx/'+ str(self.ts)+ '/config.json')
-        else: 
-            shutil.copyfile('config.json', 'gfx/'+ str(self.ts)+ '/config.json')
         self.loss_history = []
-        self.model = Sequential()
-        self.model.add(Dense(self.N_nodes, input_shape=(self.ndims,), activation=None))
-        for i in range(self.N_layers):
-            self.model.add(Dense(self.N_nodes, activation='relu'))
-            self.model.add(Dense(self.N_nodes, activation='elu'))
-            self.model.add(Dense(self.N_nodes, activation='selu'))
-        self.model.add(Dense(1, activation=None))
+        if load == True:
+            print("Existing model is loaded")
+            self.model = load_model("gfx/"+ str(self.ts) + "/model.keras")
+        else: 
+            print("New model is initialized")
+            self.model = Sequential()
+            self.model.add(Dense(self.N_nodes, input_shape=(self.ndims,), activation=None))
+            for i in range(self.N_layers):
+                self.model.add(Dense(self.N_nodes, activation='relu'))
+                self.model.add(Dense(self.N_nodes, activation='elu'))
+                self.model.add(Dense(self.N_nodes, activation='selu'))
+            self.model.add(Dense(1, activation=None))
         if self.ndims ==1:
             self.points = tf.Variable(tf.random.uniform((self.N_points, 1), -self.lx,self.lx)) 
             self.dx = 0.05
@@ -67,7 +76,7 @@ class simple_mfg:
                 return p
             self.p = np.zeros(self.nx) + np.sqrt(self.m_0)
             self.p = jacobi(self.p)
-            print('Real solution is computed, learning begins.')
+            print('Real solution is computed.')
         else: 
             self.points = tf.Variable(tf.random.uniform((self.N_points, 2), -self.lx,self.lx))
             x_b1 = 2*self.lx*tf.keras.backend.random_bernoulli((int(self.N_b/2), 1), 0.5)-self.lx
@@ -126,9 +135,11 @@ class simple_mfg:
             else:
                 self.train_step(False, learning_rate)
             step = step + 1
-        self.model.save_weights('gfx/'+ str(self.ts) + '/model.weights.h5')
+        self.model.save('gfx/'+ str(self.ts) + '/model.keras')
     
-    def warmstart(self, training_steps = 5000, learning_rate = 10e-5):
+    def warmstart(self):
+        training_steps = self.training_steps//10
+        learning_rate = self.learning_rate
         print('      #iter         |   Loss_total')
         print('----------------------------------')
         print('    ',end="")
