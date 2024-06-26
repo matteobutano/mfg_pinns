@@ -8,18 +8,14 @@ import os
 import shutil
 
 class simple_mfg:
-    def __init__(self, ts):
+    def __init__(self, ts, load):
         self.ts = ts
-        if not os.path.exists('gfx/'+ str(self.ts)):
-            load=False
-            os.mkdir("gfx/"+ str(self.ts))
+        if not load:
             shutil.copyfile("config.json", "gfx/"+ str(self.ts)+ "/config.json")
             with open("config.json") as f:
                 var_config = json.loads(f.read())
-            print("Directory created") 
         else:
             with open("gfx/"+ str(self.ts) + "/config.json") as f:
-                load = True
                 var_config = json.loads(f.read())
         self.ndims = var_config['ndims']
         self.lx = var_config['lx']
