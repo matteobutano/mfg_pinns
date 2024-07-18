@@ -1,6 +1,5 @@
 __pycache__/
 gfx/
 slur_python.slur
-config.json
 train.sh
 *.ipynb

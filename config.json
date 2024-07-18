@@ -1,0 +1,18 @@
+{
+    "lx" : 5,
+    "ndims": 1,
+    "N_points" : 1000,
+    "N_nodes" : 300,
+    "N_layers"  : 3,
+    "training_steps": 500,
+    "learning_rate" : 10e-6,
+    "weight_PDE": 1, 
+    "weight_b": 1, 
+    "weight_cyl": 1, 
+    "pot" : -10e4,
+    "mu" : 1,
+    "m_0" : 1,
+    "xi" : 0.5,
+    "c_s" : 0.25,
+    "R" : 0.5
+}
