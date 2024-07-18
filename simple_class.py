@@ -40,6 +40,7 @@ class simple_mfg:
         self.loss_history = []
         if load == True:
             print("Existing model is loaded")
+            print("gfx/"+ str(self.ts) + "/model.keras")
             self.model = load_model("gfx/"+ str(self.ts) + "/model.keras")
         else: 
             print("New model is initialized")
