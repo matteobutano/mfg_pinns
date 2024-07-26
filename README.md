@@ -1,1 +1,3 @@
-# mfg_pinns
+#Physics Informed Neural Networks (PINNs) applied to Mean-Field Games (MFG) equations
+
+This repository contains the code used to solve the MFG equations presented in the works of [Bonnemain et al.](https://arxiv.org/abs/2201.08592) and of [Butano et al.](https://arxiv.org/abs/2302.08945). Here, we will use a Neural Network to reproduce the solution of the equations and train it to solve the operator associate with the MFG system. To modify the NN parameters, use the config.json file. Once the repository is cloned, create inside of it a folder named gfx, then use the run.py script to perform the training. 
